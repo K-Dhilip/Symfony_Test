@@ -3,7 +3,36 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        echo 'Build '
+        bat 'composer install'
+      }
+    }
+
+    stage('test') {
+      parallel {
+        stage('Unitaire') {
+          steps {
+            bat 'php bin/phpunit tests/unit'
+          }
+        }
+
+        stage('integration ') {
+          steps {
+            bat 'php bin/phpunit tests/integration'
+          }
+        }
+
+        stage('Fonctionnel ') {
+          steps {
+            bat 'php bin/phpunit tests/functional'
+          }
+        }
+
+      }
+    }
+
+    stage('deploy') {
+      steps {
+        bat 'symfony server:start'
       }
     }
 
